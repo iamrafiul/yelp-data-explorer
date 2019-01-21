@@ -1,0 +1,6 @@
+cassandra-driver==3.16.0
+cql==1.4.0
+py4j==0.10.7
+pyspark==2.4.0
+six==1.12.0
+thrift==0.11.0
