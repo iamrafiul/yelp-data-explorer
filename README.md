@@ -116,6 +116,15 @@ Now, we shall create a network and will run our 2 containers using the same netw
 ```
 docker network create yelpnet
 ```
+
+```
+docker run --net=yelpnet -d --name=cassy cassandra
+```
+
+```
+docker run --net=yelpnet -ti --name=spark spark-docker:latest /bin/bash /app/yelp_extractor.sh /app/yelp_dataset.tar
+```
+
 ##### Create a docker network
 
 
