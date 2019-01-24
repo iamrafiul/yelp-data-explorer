@@ -1,0 +1,46 @@
+version: '3'
+services:
+  spark:
+    build: .
+    hostname: "docker-spark"
+    container_name: 'docker-spark'
+    environment:
+      - SPARK_MASTER_HOST=sparkmaster.service.consul
+      - SERVICE_NAME=sparkmaster
+      - SERVICE_4040_NAME=sparkmaster
+      - SERVICE_6066_NAME=sparkmaster
+      - SERVICE_7077_NAME=sparkmaster
+      - SERVICE_8080_NAME=sparkmaster
+    command: /spark/bin/spark-submit --conf spark.cassandra.connection.host=cassandra --packages datastax:spark-cassandra-connector:2.4.0-s_2.11 /app/yelp_data_extractor.py -f app/yelp_dataset.tar
+
+  cassandra:
+    image: cassandra:latest
+    hostname: "cassy"
+    container_name: 'cassandra'
+    ports:
+      - "9160:9160"
+      - "9042:9042"
+      - "7199:7199"
+      - "7000:7000"
+      - "7001:7001"
+
+
+#sparkmaster:
+#  image: foxtrotsystems/apache-spark:1.6.1
+#  container_name: sparkmaster
+#  net: host
+#  mem_limit: 1500000000
+#  environment:
+#    - SPARK_MASTER_HOST=sparkmaster.service.consul
+#    - SERVICE_NAME=sparkmaster
+#    - SERVICE_4040_NAME=sparkmaster
+#    - SERVICE_6066_NAME=sparkmaster
+#    - SERVICE_7077_NAME=sparkmaster
+#    - SERVICE_8080_NAME=sparkmaster
+#  command: /usr/local/bin/start master
+#  ports:
+#    - "4040:4040"
+#    - "6066:6066"
+#    - "7077:7077"
+#    - "8080:8080"
+#  restart: always

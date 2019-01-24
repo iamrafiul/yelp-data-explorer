@@ -16,7 +16,10 @@ class YelpDataProcessor:
         self.spark = SparkSession.builder \
             .master("local") \
             .appName("Newyorker Yelp Data Ingestor") \
+            .config("spark.debug.maxToStringFields", 500) \
             .getOrCreate()
+
+        # .set("spark.cassandra.connection.host", "0.0.0.0") \
 
         self.sqlContext = SQLContext(self.spark)
         self.data_dir = data_dir
@@ -68,16 +71,16 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     if args.tar_file:
-        keyspace = "ny_yelp"
+        keyspace = "yelp_data"
 
         dir_path = os.path.dirname(os.path.realpath(__file__))
         data_dir = dir_path + '/data'
 
         yelp_processor = YelpDataProcessor(keyspace=keyspace, data_dir=data_dir)
 
-        print("Start extracting tar file.")
-        yelp_processor.extract_tar_file(args.tar_file)
-        print('Successfully extracted tar file in directory \'{}\''.format(data_dir))
+        # print("Start extracting tar file.")
+        # yelp_processor.extract_tar_file(args.tar_file)
+        # print('Successfully extracted tar file in directory \'{}\''.format(data_dir))
 
         print("Start building Cassandra schemas.")
         schema_builder = CassandraSchemaGenerator(keyspace)
