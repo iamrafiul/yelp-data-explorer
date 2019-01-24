@@ -5,7 +5,7 @@ class CassandraSchemaGenerator:
     def __init__(self, keyspace):
         self.keyspace = keyspace
         # self.cluster = Cluster(port=9042)
-        self.cluster = Cluster()
+        self.cluster = Cluster(['cassandra'])
         self.cluster_conn = self.cluster.connect()
 
     def create_schema(self):

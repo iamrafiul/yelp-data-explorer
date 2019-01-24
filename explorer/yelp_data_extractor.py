@@ -1,5 +1,4 @@
 import os
-import sys
 import argparse
 import tarfile
 import glob
@@ -71,7 +70,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     if args.tar_file:
-        keyspace = "yelp_data"
+        keyspace = "yelpdata"
 
         dir_path = os.path.dirname(os.path.realpath(__file__))
         data_dir = dir_path + '/data'
@@ -87,6 +86,6 @@ if __name__ == '__main__':
         schema_builder.create_schema()
         print("Successfully build Cassandra schemas.")
 
-        print("Start inserting data from JSON to Cassandra tables.")
-        yelp_processor.process_data()
-        print("Successfully inserted data into Cassandra tables.")
+        # print("Start inserting data from JSON to Cassandra tables.")
+        # yelp_processor.process_data()
+        # print("Successfully inserted data into Cassandra tables.")

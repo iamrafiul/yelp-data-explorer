@@ -1,9 +1,11 @@
 version: '3'
 services:
   spark:
-    build: .
+    build: ./explorer
     hostname: "docker-spark"
     container_name: 'docker-spark'
+    volumes:
+      - "${DATA_FILE_PATH}:/app/dataset.tar"
     environment:
       - SPARK_MASTER_HOST=sparkmaster.service.consul
       - SERVICE_NAME=sparkmaster
@@ -11,7 +13,7 @@ services:
       - SERVICE_6066_NAME=sparkmaster
       - SERVICE_7077_NAME=sparkmaster
       - SERVICE_8080_NAME=sparkmaster
-    command: /spark/bin/spark-submit --conf spark.cassandra.connection.host=cassandra --packages datastax:spark-cassandra-connector:2.4.0-s_2.11 /app/yelp_data_extractor.py -f app/yelp_dataset.tar
+    command: /spark/bin/spark-submit --conf spark.cassandra.connection.host=cassandra --packages datastax:spark-cassandra-connector:2.4.0-s_2.11 /app/yelp_data_extractor.py -f /app/dataset.tar
 
   cassandra:
     image: cassandra:latest
@@ -23,6 +25,35 @@ services:
       - "7199:7199"
       - "7000:7000"
       - "7001:7001"
+
+
+
+
+#version: '3'
+#services:
+#  spark:
+#    build: .
+#    hostname: "docker-spark"
+#    container_name: 'docker-spark'
+#    environment:
+#      - SPARK_MASTER_HOST=sparkmaster.service.consul
+#      - SERVICE_NAME=sparkmaster
+#      - SERVICE_4040_NAME=sparkmaster
+#      - SERVICE_6066_NAME=sparkmaster
+#      - SERVICE_7077_NAME=sparkmaster
+#      - SERVICE_8080_NAME=sparkmaster
+#    command: /spark/bin/spark-submit --conf spark.cassandra.connection.host=cassandra --packages datastax:spark-cassandra-connector:2.4.0-s_2.11 /app/yelp_data_extractor.py -f app/yelp_dataset.tar
+#
+#  cassandra:
+#    image: cassandra:latest
+#    hostname: "cassy"
+#    container_name: 'cassandra'
+#    ports:
+#      - "9160:9160"
+#      - "9042:9042"
+#      - "7199:7199"
+#      - "7000:7000"
+#      - "7001:7001"
 
 
 #sparkmaster:
