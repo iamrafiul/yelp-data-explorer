@@ -75,9 +75,9 @@ if __name__ == '__main__':
 
         yelp_processor = YelpDataProcessor(keyspace=keyspace, data_dir=data_dir)
 
-        print("Start extracting tar file.")
-        yelp_processor.extract_tar_file(args.tar_file)
-        print('Successfully extracted tar file in directory \'{}\''.format(data_dir))
+        # print("Start extracting tar file.")
+        # yelp_processor.extract_tar_file(args.tar_file)
+        # print('Successfully extracted tar file in directory \'{}\''.format(data_dir))
 
         print("Start building Cassandra schemas.")
         schema_builder = CassandraSchemaGenerator(keyspace)

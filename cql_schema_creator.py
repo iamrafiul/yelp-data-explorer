@@ -4,7 +4,15 @@ from cassandra.cluster import Cluster
 class CassandraSchemaGenerator:
     def __init__(self, keyspace):
         self.keyspace = keyspace
-        self.cluster = Cluster(['127.0.0.1'], port=9042)
+        try:
+            self.cluster = Cluster(
+                ['cassy']
+            )
+        except:
+            self.cluster = Cluster(
+                ['127.0.0.1']
+            )
+
         self.cluster_conn = self.cluster.connect()
 
     def create_schema(self):
