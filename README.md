@@ -66,7 +66,7 @@ cassandra -f
 ```
 * Run the following command:
 ```
-$SPARK_HOME/bin/spark-submit --packages datastax:spark-cassandra-connector:2.4.0-s_2.11 yelp_data_extractor.py -f yelp_dataset.tar
+$SPARK_HOME/bin/spark-submit --conf spark.cassandra.connection.host=cassandra --packages datastax:spark-cassandra-connector:2.4.0-s_2.11 yelp_data_extractor.py -f yelp_dataset.tar
 ```
 
 If everything goes well, you will see that spark has started the spark-submit job, untar'ing the data into json files and writing them into cassandra tables. It will take a while, be patient. 
@@ -81,12 +81,7 @@ containers for different services and they communicate among them. To maintain a
 configuration file in docker which will contain the details of all the docker containers and define the network though which they shall communicate 
 with each other.
 
-This file is called `docker-compose.yml` and you can run all the containers you have mentioned in that file using the following command:
-```
-docker-compose up
-```
-This will build, (re)create, start, and attach to containers for a service.
-
+This file is called `docker-compose.yml` and you can run all the containers you have mentioned in that file using this.
 
 > ##### A bit of background before running
 > 
@@ -103,10 +98,10 @@ Run
 ```
 docker-compose up
 ```
-Docker will create the containers and will run the `spark-submit` job. If everything goes well, you will have all the data in cassandra under the keyspace
+This will build, (re)create, start, and attach to containers for a service. Docker will create the containers and will run the `spark-submit` job. If everything goes well, you will have all the data in cassandra under the keyspace
 `yelp_data`.
 
-It will take some time becasue of the extraction of `.tar` file. Also, the amount of data is more than 8 GB and we are running only one cluster of 
+It will take some time becasue of the extraction of `.tar` file. Also, the amount of data is more than 8 GB and we are running a single cluster of 
 cassandra which is not optimal.
 
 
