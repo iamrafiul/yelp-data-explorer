@@ -11,12 +11,11 @@ Schema creation is done by `cql_schema_creator.py`. It connects to the cassandra
 using the cassandra host provided in `spark-submit` job and creates the keyspace and tables
 from the given CQL.
 
-## Step 2: Parsing YELP open dataset
+## Step 2: Parsing YELP open dataset and Insert data into cassandra table
 This is done by the `yelp_data_extractor.py`. It takes a file as argument with `-f` flag and
 extracts the tar file in a sub-directory named `data/`.
 
-## Step 3: Insert data into cassandra table
-This part is done by following steps:
+Data insertion is done by following steps:
 
 1. List all the json files from `data/` directory 
 2. Read them one by one and extract the table name from the JSON file name.
