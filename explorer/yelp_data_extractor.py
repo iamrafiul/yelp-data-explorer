@@ -95,6 +95,11 @@ if __name__ == '__main__':
     if args.tar_file:
         keyspace = "yelp_data"
 
+        print("Start building Cassandra schemas.")
+        schema_builder = CassandraSchemaGenerator(keyspace)
+        schema_builder.create_schema()
+        print("Successfully build Cassandra schemas.")
+
         dir_path = os.path.dirname(os.path.realpath(__file__))
         data_dir = dir_path + '/data'
 
@@ -106,11 +111,6 @@ if __name__ == '__main__':
         yelp_processor.extract_tar_file(args.tar_file)
         print('Successfully extracted tar file in directory \'{}\''
               .format(data_dir))
-
-        print("Start building Cassandra schemas.")
-        schema_builder = CassandraSchemaGenerator(keyspace)
-        schema_builder.create_schema()
-        print("Successfully build Cassandra schemas.")
 
         print("Start inserting data from JSON to Cassandra tables.")
         yelp_processor.process_data()

@@ -4,15 +4,33 @@ The repo. does three jobs:
 
 *  Parse [YELP open dataset](https://www.yelp.com/dataset/download) and save it in database in tabular format.
 *  Write queries against the data to verify that everything works.
-*  Dockerize the program.
+*  Dockerize the project.
 
-We shall setup and go through them one by one.
+## Step 1: Create Database schema
+Schema creation is done by `cql_schema_creator.py`. It connects to the cassandra database 
+using the cassandra host provided in `spark-submit` job and creates the keyspace and tables
+from the given CQL.
 
-## Setup and Run
+## Step 2: Parsing YELP open dataset
+This is done by the `yelp_data_extractor.py`. It takes a file as argument with `-f` flag and
+extracts the tar file in a sub-directory named `data/`.
+
+## Step 3: Insert data into cassandra table
+This part is done by following steps:
+
+1. List all the json files from `data/` directory 
+2. Read them one by one and extract the table name from the JSON file name.
+3. Insert data into that table in cassandra using Spark.
+
+## Step 4: Dockerize the project and run.
+ 
+We shall go through this step one by one.
+
+### Setup and Run
 
 This section describes how to setup the project and run it step by step.
 
-### Setup
+#### Setup
 
 Clone the project.
 
@@ -32,7 +50,7 @@ takes care of it, that's the beauty of containerization.
 
 In the next step, we shall use docker to build and run our project.
 
-### Run
+#### Run
 
 So we want to containerize our project before running it. The idea is to run two docker containers, one for spark(along with our code) and one for 
 cassandra. We shall run our code from the spark container and save the yelp data in the cassandra database which will be in another container.
