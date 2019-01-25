@@ -46,8 +46,6 @@ that file using `docker-compose` which we have already installed.
 
 > ##### A bit of `networking` in docker
 > 
-> Before running the docker compose, let me tell you something. 
-> 
 > If we run multiple Docker containers and want to make communication between them, we need 
 > to create network(s) so that the containers know which network to connect for which 
 > container. Networking in docker is a very important concept as we mostly run multi-container 
@@ -65,15 +63,16 @@ And then run it using the `up` command
 sudo DATA_FILE_PATH=./yelp_dataset.tar docker-compose up 
 ```
 
-This will build, (re)create, start, and attach to containers for a service. `DATA_FILE_PATH` 
-is the volume(in our case the yelp tar file) we're giving to docker as a file which will be 
+> `DATA_FILE_PATH` is the volume(in our case the yelp tar file) we're giving to docker as a file which will be 
 processed using a `spark-submit` job.
+
+This will build, (re)create, start, and attach to containers for a service. 
+ 
+If everything goes well, docker compose will create the containers, attach them, run the `spark-submit` 
+job to untar the file, save data into cassandra and query the table to check if the data is ok.
 
 > It will take some time because of the extraction of big `.tar` file and the amount of data
  will be more than 8 GB which we are processing in a single cassandra cluster of cassandra 
  which is not optimal.
- 
-If everything goes well, docker compose will create the containers, attach them, run the `spark-submit` 
-job to untar the file, save data into cassandra and query the table to check if the data is ok.
 
 You will see the query results in console.
