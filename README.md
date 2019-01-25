@@ -2,7 +2,7 @@
 
 The repo. does three jobs: 
 
-*  Parse YELP open dataset and save it in (any)tabular format using SMACK stack.
+*  Parse [YELP open dataset](https://www.yelp.com/dataset/download) and save it in database in tabular format.
 *  Write queries against the data to verify that everything works.
 *  Dockerize the program.
 
@@ -16,45 +16,44 @@ This section describes how to setup the project and run it step by step.
 
 Clone the project.
 
-To setup the environment for running the project, do the following:
+Setup the environment to run the project:
 * Download and install Docker from [here](https://docs.docker.com/docker-for-mac/install/).
 * Download and install Docker compose from [here](https://docs.docker.com/compose/). If you are using the docker app of Mac, you need not to install it
 separately, docker-compose comes built in with this app.
-* Go to the project directory in your machine and [download yelp open dataset](https://www.yelp.com/dataset/download).
-It's more than 3 GB so will take some time.
-* Make sure the `.tar` file is in your project directory.
+* [Download yelp open dataset](https://www.yelp.com/dataset/download). It's more than 3 GB so will take some time.
+* Copy the `.tar` file into the project directory of your machine.
 
 You can run the project without containerizing it. It is competitively easy if you install cassandra and run it in your local machine, create 
 a virtual environment, install the dependencies and run the `spark-submit` job.
 
-We containerize our code so that it becomes non-OS/Machine dependent which is an industry standard now. Once you containerize your project, 
-anyone can run the project by creating the docker containers, no matter which OS/Machine they are using. Containerization frameworks such as Docker 
+Instead of doing so, we shall containerize the project so that it becomes non-OS/Machine dependent which is an industry standard now. Once you containerize your project, 
+anyone can build and run the project, no matter which OS/Machine they are using. Containerization frameworks such as Docker 
 takes care of it, that's the beauty of containerization.
- 
 
 In the next step, we shall use docker to build and run our project.
 
 ### Run
 
-So we want to containerize our project before running it. The idea is to run two docker containers, one for spark(along with our code) & one for 
-cassandra. We shall run our code from the spark container and save the yelp data in the cassandra database which is in another container.
+So we want to containerize our project before running it. The idea is to run two docker containers, one for spark(along with our code) and one for 
+cassandra. We shall run our code from the spark container and save the yelp data in the cassandra database which will be in another container.
 
-Before creating the containers from the images, you need to consider/understand few things. In a production environment, there should be several docker
-containers for different services and they communicate among them. To maintain and run this `multi-container applications` easily, you can create a 
-configuration file in docker which will contain the details of all the docker containers and define the network though which they shall communicate 
-with each other.
+As this will be a `multi-container applications`, instead of doing everything by ourself, 
+we shall create a configuration file in docker which will take care of building and running 
+the container, make them available in network(s) and hence, will leverage our effort and time.
 
-This file is called `docker-compose.yml` and you can run all the containers you have mentioned in that file using this.
+The file we shall write these configuration is called `docker-compose.yml` and we shall run 
+that file using `docker-compose` which we have already installed.
 
 > ##### A bit of `networking` in docker
 > 
 > Before running the docker compose, let me tell you something. 
 > 
-> If we run multiple Docker containers and want to make communication between them, we need to create network(s) so that all the containers which will 
-> communicate with each other know which network to go for communicating with a specific container. Network in docker is a very important concept as 
-> we mostly run multi-container system in real time scenario(i. e. production environment). 
+> If we run multiple Docker containers and want to make communication between them, we need 
+> to create network(s) so that the containers know which network to connect for which 
+> container. Networking in docker is a very important concept as we mostly run multi-container 
+> system in real time scenario(i. e. production environment). 
 > 
-> As we're not using any orchestration framework here, we shall go with the regular docker networking model.
+> As we're using `docker-compose`, it will take care of the networking for us as well.
 
 First `build` the project with `docker-compose` using  
 ```
@@ -66,11 +65,13 @@ And then run it using the `up` command
 sudo DATA_FILE_PATH=./yelp_dataset.tar docker-compose up 
 ```
 
-This will build, (re)create, start, and attach to containers for a service. `DATA_FILE_PATH` is the volume(in our case the yelp tar file) 
-we're giving to docker as a file which will be processed using a `spark-submit` job.
+This will build, (re)create, start, and attach to containers for a service. `DATA_FILE_PATH` 
+is the volume(in our case the yelp tar file) we're giving to docker as a file which will be 
+processed using a `spark-submit` job.
 
-> It will take some time because of the extraction of big `.tar` file. Also, the amount of data will be more 
-> than 8 GB and we are running a single cluster of cassandra which is not optimal.
+> It will take some time because of the extraction of big `.tar` file and the amount of data
+ will be more than 8 GB which we are processing in a single cassandra cluster of cassandra 
+ which is not optimal.
  
 If everything goes well, docker compose will create the containers, attach them, run the `spark-submit` 
 job to untar the file, save data into cassandra and query the table to check if the data is ok.
