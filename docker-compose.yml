@@ -1,0 +1,28 @@
+version: '3'
+services:
+  spark:
+    build: ./explorer
+    hostname: "docker-spark"
+    container_name: 'docker-spark'
+    volumes:
+      - "${DATA_FILE_PATH}:/app/yelp_dataset.tar"
+    environment:
+      - SPARK_MASTER_HOST=sparkmaster.service.consul
+      - SERVICE_NAME=sparkmaster
+      - SERVICE_4040_NAME=sparkmaster
+      - SERVICE_6066_NAME=sparkmaster
+      - SERVICE_7077_NAME=sparkmaster
+      - SERVICE_8080_NAME=sparkmaster
+    command: sh -C /app/yelp_extractor.sh
+
+  cassandra:
+    image: cassandra:latest
+    hostname: "cassy"
+    container_name: 'cassandra'
+    ports:
+      - "9160:9160"
+      - "9042:9042"
+      - "7000:7000"
+      - "7001:7001"
+      - "7199:7199"
+
