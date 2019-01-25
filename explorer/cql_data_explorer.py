@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-    Cassandra data explorer.
+    Cassandra data explorer standalone script which can be run by a
+    spark submit job.
 
     Runs query on cassandra cluster to check if there is data in tables.
 """
