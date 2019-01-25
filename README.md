@@ -46,26 +46,33 @@ with each other.
 
 This file is called `docker-compose.yml` and you can run all the containers you have mentioned in that file using this.
 
-> ##### A bit of background before running
+> ##### A bit of `networking` in docker
 > 
 > Before running the docker compose, let me tell you something. 
 > 
-> If we run multiple Docker containers and want to make communication between them, we need to create network so that all the containers which will 
+> If we run multiple Docker containers and want to make communication between them, we need to create network(s) so that all the containers which will 
 > communicate with each other know which network to go for communicating with a specific container. Network in docker is a very important concept as 
-> we run multi-container system in real time scenario(i. e. production environment). If you use Kubernetes(K8) for docker orchestration, they have 
-> their own `kubernetes model` to communicate between pods.
+> we mostly run multi-container system in real time scenario(i. e. production environment). 
 > 
-> As we're not using K8 here, we shall go with the regular docker networking model. 
+> As we're not using any orchestration framework here, we shall go with the regular docker networking model.
 
-Run
+First `build` the project with `docker-compose` using  
 ```
-docker-compose up
+sudo DATA_FILE_PATH=./yelp_dataset.tar docker-compose build 
 ```
-This will build, (re)create, start, and attach to containers for a service. Docker will create the containers and will run the `spark-submit` job. If everything goes well, you will have all the data in cassandra under the keyspace
-`yelp_data`.
+And then run it using the `up` command
 
-It will take some time becasue of the extraction of `.tar` file. Also, the amount of data is more than 8 GB and we are running a single cluster of 
-cassandra which is not optimal.
+```
+sudo DATA_FILE_PATH=./yelp_dataset.tar docker-compose up 
+```
 
+This will build, (re)create, start, and attach to containers for a service. `DATA_FILE_PATH` is the volume(in our case the yelp tar file) 
+we're giving to docker as a file which will be processed using a `spark-submit` job.
 
-I have done these steps in a macbook pro. You can use any OS and setup these things accordingly.
+> It will take some time because of the extraction of big `.tar` file. Also, the amount of data will be more 
+> than 8 GB and we are running a single cluster of cassandra which is not optimal.
+ 
+If everything goes well, docker compose will create the containers, attach them, run the `spark-submit` 
+job to untar the file, save data into cassandra and query the table to check if the data is ok.
+
+You will see the query results in console.
