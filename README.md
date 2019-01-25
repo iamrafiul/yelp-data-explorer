@@ -24,54 +24,17 @@ separately, docker-compose comes built in with this app.
 It's more than 3 GB so will take some time.
 * Make sure the `.tar` file is in your project directory.
 
-We can run the project without containerizing it. It is competitively easy if you install cassandra and run it in your local machine, create 
-a virtual environment, install the dependencies and run the python code. If you want to do that, I have described how to do so in the `Run` section.
+You can run the project without containerizing it. It is competitively easy if you install cassandra and run it in your local machine, create 
+a virtual environment, install the dependencies and run the `spark-submit` job.
 
 We containerize our code so that it becomes non-OS/Machine dependent which is an industry standard now. Once you containerize your project, 
 anyone can run the project by creating the docker containers, no matter which OS/Machine they are using. Containerization frameworks such as Docker 
 takes care of it, that's the beauty of containerization.
  
 
-In the next step, we shall create docker containers to run the project.
+In the next step, we shall use docker to build and run our project.
 
 ### Run
-
-#### Without Docker
-
-I am assuming you have python 3+ and have alredy downloaded the yelp dataset `.tar` file and it's in your project directory.
-
-Now do the following:
-* Install java in [Linux](http://tipsonubuntu.com/2016/07/31/install-oracle-java-8-9-ubuntu-16-04-linux-mint-18/) or [Mac](https://www.cs.dartmouth.edu/~scot/cs10/mac_install/mac_install.html).
-* Set Java 8 as your main java version using JAVA_HOME variable. For me, java home was the following in my mac
-```
-JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_201.jdk/Contents/Home
-```
-* Set SPARK_HOME variable. For me, it was like this:
-```
-SPARK_HOME=/usr/local/Cellar/apache-spark/2.4.0
-```
-* Download and install cassandra in [Linux](https://www.vultr.com/docs/how-to-install-apache-cassandra-3-11-x-on-ubuntu-16-04-lts) or [Mac](https://medium.com/@areeves9/cassandras-gossip-on-os-x-single-node-installation-of-apache-cassandra-on-mac-634e6729fad6)
-* Create a virtual environment in the project directory and activate it
-```
-virtualenv -p python3 venv
-source venv/bin/activate
-```
-* Install the packages from requirements.txt using pip
-```
-pip install -r requirements.txt
-```
-* Run cassandra from shell
-```
-cassandra -f
-```
-* Run the following command:
-```
-$SPARK_HOME/bin/spark-submit --packages datastax:spark-cassandra-connector:2.4.0-s_2.11 yelp_data_extractor.py -f yelp_dataset.tar
-```
-
-If everything goes well, you will see that spark has started the spark-submit job, untar'ing the data into json files and writing them into cassandra tables. It will take a while, be patient. 
-
-#### With Docker
 
 So we want to containerize our project before running it. The idea is to run two docker containers, one for spark(along with our code) & one for 
 cassandra. We shall run our code from the spark container and save the yelp data in the cassandra database which is in another container.
@@ -81,12 +44,7 @@ containers for different services and they communicate among them. To maintain a
 configuration file in docker which will contain the details of all the docker containers and define the network though which they shall communicate 
 with each other.
 
-This file is called `docker-compose.yml` and you can run all the containers you have mentioned in that file using the following command:
-```
-docker-compose up
-```
-This will build, (re)create, start, and attach to containers for a service.
-
+This file is called `docker-compose.yml` and you can run all the containers you have mentioned in that file using this.
 
 > ##### A bit of background before running
 > 
@@ -103,10 +61,10 @@ Run
 ```
 docker-compose up
 ```
-Docker will create the containers and will run the `spark-submit` job. If everything goes well, you will have all the data in cassandra under the keyspace
+This will build, (re)create, start, and attach to containers for a service. Docker will create the containers and will run the `spark-submit` job. If everything goes well, you will have all the data in cassandra under the keyspace
 `yelp_data`.
 
-It will take some time becasue of the extraction of `.tar` file. Also, the amount of data is more than 8 GB and we are running only one cluster of 
+It will take some time becasue of the extraction of `.tar` file. Also, the amount of data is more than 8 GB and we are running a single cluster of 
 cassandra which is not optimal.
 
 
